@@ -2,7 +2,6 @@ from tda import auth, client
 from tda.orders.equities import equity_buy_market, equity_sell_market
 from tda.orders.common import Duration, Session
 from webdriver_manager.chrome import ChromeDriverManager
-import yfinance as yf
 import datetime as dt
 from datetime import datetime
 import pandas as pd
@@ -146,56 +145,6 @@ def place_order(c, order_type, shares):
             Session.NORMAL).set_duration(Duration.DAY).build()
         c.place_order(ACCT_NUMBER, order_spec)
 
-
-def get_action():
-
-    c = auth_func()
-    now = datetime.now()
-    print(now)
-
-    try:
-        # get current position
-        position = get_position(c)
-        print('HAS POSITION: ' + str(position))
-
-        df = get_prices(c, now)
-        bup, bdown = get_BBands(df.close, TIME_PERIOD)
-
-        # get current price
-        price = get_cur_price(c)
-
-        # get account balance
-        balance, roundtrips = get_account(c)
-
-        print("Current balance " + str(balance))
-        print("Current price " + str(price))
-        print("High Band " + str(bup))
-        print("Low Band " + str(bdown))
-
-        # check if roundtrips is less than 2
-        action = "nothing"
-        if roundtrips < 2:
-
-            if price < bdown:
-                if position == False:
-                    place_order(c, 'buy', 1)
-                    action = "buy"
-                    print("Bought")
-
-            if price > bup:
-                if position == True:
-                    place_order(c, 'sell', 1)
-                    action = "sell"
-                    print("Sold")
-
-    except:
-        print('Auth Error')
-        price = "ERR"
-        bup = "ERR"
-        bdown = "ERR"
-        action = "ERR"
-
-
 def get_action():
 
     c = auth_func()
@@ -236,10 +185,7 @@ def get_action():
 
     except:
         print('Auth Error')
-        price = "ERR"
-        bup = "ERR"
-        bdown = "ERR"
-        action = "ERR"
+
 
 
 def main():
